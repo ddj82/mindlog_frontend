@@ -8,6 +8,21 @@ const defaultHeaders = () => {
     };
 };
 
+// ✅ 회원가입
+export const register = async (email: string, password: string, nickname: string) => {
+    const res = await fetch(`${API_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: defaultHeaders(),
+        body: JSON.stringify({ email, password, nickname }),
+    });
+
+    if (!res.ok) {
+        throw new Error('내 정보 조회 실패');
+    }
+
+    return await res.text();
+};
+
 // ✅ 감정일기 저장
 export const saveDiary = async (emotion: string, note: string, date: string) => {
     const res = await fetch(`${API_URL}/api/diary`, {
