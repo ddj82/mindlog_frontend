@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 공통 스타일 정의 */
+.mindlog-btn {
+    @apply bg-mindlog dark:bg-mindlog-300 text-mindlog-light dark:text-mindlog-dark transition-colors;
+}
+
+.mindlog-btn-hover {
+    @apply hover:bg-mindlog-700 dark:hover:bg-mindlog
+}
+
+.mindlog-link {
+    @apply text-mindlog dark:text-mindlog-light hover:underline;
+}
+
+.mindlog-innerText {
+    @apply text-text-main
+}
