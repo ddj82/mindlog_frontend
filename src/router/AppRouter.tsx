@@ -7,7 +7,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Diary from "../pages/Diary";
-import Calendar from "../pages/Calendar";
+import EmotionCalendar from "../pages/EmotionCalendar.tsx";
 import Stats from "../pages/Stats";
 import MyPage from "../pages/MyPage";
 
@@ -24,7 +24,7 @@ const AppRouter = () => {
                     {/* 보호 라우트 */}
                     <Route element={<ProtectedAuthRoute />}>
                         <Route path="/diary" element={<Diary />} />
-                        <Route path="/calendar" element={<Calendar />} />
+                        <Route path="/calendar" element={<EmotionCalendar />} />
                         <Route path="/stats" element={<Stats />} />
                         <Route path="/mypage" element={<MyPage />} />
                     </Route>

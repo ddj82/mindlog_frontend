@@ -1,3 +1,5 @@
+import { DiaryData } from '../types/DiaryData';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 const defaultHeaders = () => {
@@ -63,5 +65,17 @@ export const fetchMyInfo = async () => {
         throw new Error('내 정보 조회 실패');
     }
 
+    return await res.json();
+};
+
+// ✅ 월별 일기 조회
+export const fetchMonthlyDiaries = async (year: number, month: number): Promise<DiaryData[]> => {
+    const res = await fetch(`${API_URL}/api/diary/monthly?year=${year}&month=${month}`, {
+        method: 'GET',
+        headers: defaultHeaders(),
+    });
+    if (!res.ok) {
+        throw new Error(`월별 일기 조회 실패: ${res.status}`);
+    }
     return await res.json();
 };

@@ -31,7 +31,7 @@ const Header = () => {
                 Mindlog
             </button>
 
-            <div className="flex items-center gap-2 md:gap-4 text-xxs md:text-sm">
+            <div className="flex items-center gap-2 md:gap-4 text-xs md:text-sm">
                 {accessToken ? (
                     <>
                         <Link to="/diary">감정기록</Link>

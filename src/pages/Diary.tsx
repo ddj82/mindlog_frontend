@@ -17,7 +17,7 @@ const Diary = () => {
 
     return (
         <div className="p-6 max-w-3xl mx-auto">
-            <h2 className="text-2xl font-semibold mb-4">감정 기록하기</h2>
+            <h2 className="text-xl md:text-2xl font-semibold mb-4">감정 기록하기</h2>
             <EmotionForm onSubmit={handleEmotionSubmit} />
         </div>
     );

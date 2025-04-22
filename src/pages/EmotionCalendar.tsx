@@ -1,0 +1,146 @@
+import React, {useEffect, useState} from "react";
+import Calendar from 'react-calendar';
+import "react-calendar/dist/Calendar.css";
+import {EMOTIONS, EmotionType} from '../constants/emotionList';
+import '../css/EmotionCalendar.css';
+import {DiaryData} from "../types/DiaryData.ts";
+import dayjs from 'dayjs';
+import {fetchMonthlyDiaries} from "../api/api.ts";
+
+const getEmotionMeta = (key: EmotionType) => EMOTIONS.find(e => e.key === key)!;
+const EmotionCalendar: React.FC = () => {
+    // 달력 상태
+    const [value, setValue] = useState<Date>(new Date());
+    // 월별 조회된 다이어리 원본 데이터
+    const [monthData, setMonthData] = useState<Record<string, DiaryData[]>>({});
+    // 선택된 날짜 및 해당 일기 리스트
+    const [selectedDate, setSelectedDate] = useState<string>('');
+    const [selectedEntries, setSelectedEntries] = useState<DiaryData[]>([]);
+
+    const todayKey = dayjs().format('YYYY-MM-DD');
+
+    // 모달 오픈/닫기 및 내용 저장용 state
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalContent, setModalContent] = useState<string>("");
+
+    // value(달) 변경 시 API 호출
+    useEffect(() => {
+        const year = value.getFullYear();
+        const month = value.getMonth() + 1;
+        fetchMonthlyDiaries(year, month)
+            .then((data: DiaryData[]) => {
+                const map: Record<string, DiaryData[]> = {};
+                data.forEach(item => {
+                    // split 대신 dayjs로 포맷
+                    const key = dayjs(item.date).format('YYYY-MM-DD');
+                    if (!map[key]) map[key] = [];
+                    map[key].push(item);
+                });
+                setMonthData(map);
+                if (selectedDate) {
+                    setSelectedEntries(map[selectedDate] || []);
+                }
+            })
+            .catch(err => console.error('월별 일기 조회 실패', err));
+    }, [value]);
+
+    // 날짜 클릭 시 해당 날짜 일기 조회
+    const onDateClick = (date: Date) => {
+        const key = dayjs(date).format('YYYY-MM-DD');
+        setSelectedDate(key);
+        setSelectedEntries(monthData[key] || []);
+    };
+
+    // 날짜 타일 클래스
+    const tileClassName = ({ view }: { view: string }) => {
+        if (view !== 'month') return '';
+        return 'rounded-xl transition-all focus:outline-none';
+    };
+
+    // 날짜 타일 콘텐츠
+    const tileContent = ({ date, view }: { date: Date; view: string }) => {
+        if (view !== 'month') return null;
+        const key = dayjs(date).format('YYYY-MM-DD');
+        const entries = monthData[key];
+        if (entries && entries.length > 0) {
+            const { emoji } = getEmotionMeta(entries[entries.length - 1].emotion);
+            return <span className="emoji md:text-lg inline-block mt-1">{emoji}</span>;
+        }
+        if (key === todayKey) {
+            return <span className="text-xs block mt-1">today</span>;
+        }
+        return null;
+    };
+
+    return (
+        <div className="p-6 max-w-3xl mx-auto">
+            <h2 className="text-xl md:text-2xl font-semibold mb-4">감정 캘린더</h2>
+            <Calendar
+                onChange={value => setValue(value as Date)}
+                value={value}
+                onClickDay={onDateClick}
+                tileClassName={tileClassName}
+                tileContent={tileContent}
+                className="w-fit md:mx-14 p-4 rounded-lg shadow-md"
+                prevLabel="‹"
+                nextLabel="›"
+                formatMonthYear={(_, date) => date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' })}
+            />
+
+            {selectedEntries.length > 0 ? (
+                <div className="mt-6">
+                    <h3 className="text-xl text-text-main dark:text-text-main-dark font-semibold mb-2">
+                        {selectedDate} 일기
+                    </h3>
+                    <ul className="space-y-2">
+                        {selectedEntries.map(entry => {
+                            const { shadowClass, borderColor } = getEmotionMeta(entry.emotion);
+                            return (
+                                <li
+                                    key={entry.id}
+                                    className={`flex items-center p-3 rounded-lg border-2 ${borderColor} ${shadowClass} focus:outline-none cursor-pointer transition hover:brightness-110 hover:scale-105`}
+                                    // onClick={() => alert(entry.note)}
+                                    onClick={() => {
+                                        setModalContent(entry.note);
+                                        setIsModalOpen(true);
+                                    }}
+                                >
+                                    {/*<span className="text-xl mr-3">{emoji}</span>*/}
+                                    <p className="text-text-main dark:text-text-main-dark">{entry.note}</p>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
+            ) : (
+                <div className="mt-6">
+                    <h3 className="text-xl text-text-main dark:text-text-main-dark font-semibold mb-2">
+                        {selectedDate ? selectedDate : todayKey} 일기
+                    </h3>
+                </div>
+            )}
+            {/* 모달 */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex-center z-50"
+                     onClick={() => setIsModalOpen(false)}
+                >
+                        <div className="bg-mindlog-light dark:bg-mindlog-dark rounded-lg p-6 w-11/12 max-w-md"
+                             onClick={(e) => e.stopPropagation()}
+                        >
+                            <p className="mb-6 whitespace-pre-wrap">{modalContent}</p>
+                            <div className="flex justify-end">
+                                <button
+                                    className="px-4 py-2 mindlog-btn mindlog-btn-hover text-white rounded transition"
+                                    onClick={() => setIsModalOpen(false)}
+                                >
+                                    닫기
+                                </button>
+                            </div>
+                   </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default EmotionCalendar;

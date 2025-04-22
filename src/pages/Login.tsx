@@ -25,7 +25,7 @@ const Login = () => {
 
     return (
         <div className="p-6 max-w-md mx-auto">
-            <h2 className="text-2xl font-semibold mb-4">로그인</h2>
+            <h2 className="text-xl md:text-2xl font-semibold mb-4">로그인</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                     type="email"
