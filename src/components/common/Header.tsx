@@ -16,11 +16,22 @@ const Header = () => {
         navigate("/");
     };
 
+    const handleLogo = () => {
+        navigate("/");
+        window.location.reload();
+    };
+
     return (
         <header className="border-b border-gray-300 dark:border-gray-700 px-4 py-3 flex justify-between items-center">
-            <Link to="/" className="text-xl font-bold text-mindlog dark:text-mindlog-300">Mindlog</Link>
+            <button
+                type="button"
+                onClick={handleLogo}
+                className="text-xl font-bold text-mindlog dark:text-mindlog-300"
+            >
+                Mindlog
+            </button>
 
-            <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-2 md:gap-4 text-xxs md:text-sm">
                 {accessToken ? (
                     <>
                         <Link to="/diary">감정기록</Link>
