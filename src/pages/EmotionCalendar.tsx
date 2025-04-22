@@ -23,6 +23,20 @@ const EmotionCalendar: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState<string>("");
 
+    useEffect(() => {
+        if (!selectedDate) {
+            setSelectedDate(todayKey);
+            return;
+        }
+
+        // monthData가 준비된 후에 selectedEntries 세팅
+        if (monthData[selectedDate]) {
+            setSelectedEntries(monthData[selectedDate]);
+        } else {
+            setSelectedEntries([]);
+        }
+    }, [monthData, selectedDate]);
+
     // value(달) 변경 시 API 호출
     useEffect(() => {
         const year = value.getFullYear();
@@ -115,7 +129,7 @@ const EmotionCalendar: React.FC = () => {
             ) : (
                 <div className="mt-6">
                     <h3 className="text-xl text-text-main dark:text-text-main-dark font-semibold mb-2">
-                        {selectedDate ? selectedDate : todayKey} 일기
+                        {selectedDate} 일기
                     </h3>
                 </div>
             )}
