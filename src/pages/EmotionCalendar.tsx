@@ -9,8 +9,11 @@ import {fetchMonthlyDiaries} from "../api/api.ts";
 
 const getEmotionMeta = (key: EmotionType) => EMOTIONS.find(e => e.key === key)!;
 const EmotionCalendar: React.FC = () => {
-    // 달력 상태
+    // 기존: value는 '선택된 날짜' 용도
     const [value, setValue] = useState<Date>(new Date());
+    // 추가: 현재 보여지는 달의 시작일
+    const [activeStartDate, setActiveStartDate] = useState<Date | undefined>(new Date());
+
     // 월별 조회된 다이어리 원본 데이터
     const [monthData, setMonthData] = useState<Record<string, DiaryData[]>>({});
     // 선택된 날짜 및 해당 일기 리스트
@@ -37,26 +40,31 @@ const EmotionCalendar: React.FC = () => {
         }
     }, [monthData, selectedDate]);
 
-    // value(달) 변경 시 API 호출
+    // (달) 변경 시 API 호출
     useEffect(() => {
-        const year = value.getFullYear();
-        const month = value.getMonth() + 1;
+        if (!activeStartDate) return;  // null일 땐 API 호출하지 않음
+        const year = activeStartDate.getFullYear();
+        const month = activeStartDate.getMonth() + 1;
         fetchMonthlyDiaries(year, month)
             .then((data: DiaryData[]) => {
                 const map: Record<string, DiaryData[]> = {};
                 data.forEach(item => {
-                    // split 대신 dayjs로 포맷
                     const key = dayjs(item.date).format('YYYY-MM-DD');
                     if (!map[key]) map[key] = [];
                     map[key].push(item);
                 });
                 setMonthData(map);
-                if (selectedDate) {
-                    setSelectedEntries(map[selectedDate] || []);
-                }
+                // (선택일이 새 달에 포함되어 있으면 엔트리 초기화)
+                setSelectedEntries(map[selectedDate] || []);
             })
-            .catch(err => console.error('월별 일기 조회 실패', err));
-    }, [value]);
+            .catch(err => console.error(err));
+    }, [activeStartDate]);
+
+    // ——— 미리보기용 boolean 계산 ———
+    const isSameMonth = React.useMemo(() => {
+        if (!activeStartDate || !selectedDate) return false;
+        return dayjs(selectedDate).isSame(activeStartDate, 'month');
+    }, [activeStartDate, selectedDate]);
 
     // 날짜 클릭 시 해당 날짜 일기 조회
     const onDateClick = (date: Date) => {
@@ -90,9 +98,19 @@ const EmotionCalendar: React.FC = () => {
         <div className="p-6 max-w-3xl mx-auto">
             <h2 className="text-xl md:text-2xl font-semibold mb-4">감정 캘린더</h2>
             <Calendar
-                onChange={value => setValue(value as Date)}
-                value={value}
+                // 날짜 클릭(일기 목록만 바꿔줌)
                 onClickDay={onDateClick}
+                value={value}
+                // 날짜 선택시 포커스 이동도 원하시면 아래 onChange로 value 갱신
+                onChange={d => setValue(d as Date)}
+
+                // ← → 또는 << >> 눌러서 달이 바뀔 때
+                onActiveStartDateChange={({ activeStartDate }) => {
+                    // activeStartDate는 Date|null 이지만 null이 들어오면 undefined로 분기 처리
+                    setActiveStartDate(activeStartDate ?? undefined);
+                }}
+                // Calendar에게 보여줄 달 지정
+                activeStartDate={activeStartDate}
                 tileClassName={tileClassName}
                 tileContent={tileContent}
                 className="w-fit md:mx-14 p-4 rounded-lg shadow-md"
@@ -104,7 +122,7 @@ const EmotionCalendar: React.FC = () => {
             {selectedEntries.length > 0 ? (
                 <div className="mt-6">
                     <h3 className="text-xl text-text-main dark:text-text-main-dark font-semibold mb-2">
-                        {selectedDate} 일기
+                        {isSameMonth ? `${selectedDate} 일기` : '날짜를 선택해주세요'}
                     </h3>
                     <ul className="space-y-2">
                         {selectedEntries.map(entry => {
@@ -113,13 +131,11 @@ const EmotionCalendar: React.FC = () => {
                                 <li
                                     key={entry.id}
                                     className={`flex items-center p-3 rounded-lg border-2 ${borderColor} ${shadowClass} focus:outline-none cursor-pointer transition hover:brightness-110 hover:scale-105`}
-                                    // onClick={() => alert(entry.note)}
                                     onClick={() => {
                                         setModalContent(entry.note);
                                         setIsModalOpen(true);
                                     }}
                                 >
-                                    {/*<span className="text-xl mr-3">{emoji}</span>*/}
                                     <p className="text-text-main dark:text-text-main-dark">{entry.note}</p>
                                 </li>
                             );
@@ -129,7 +145,7 @@ const EmotionCalendar: React.FC = () => {
             ) : (
                 <div className="mt-6">
                     <h3 className="text-xl text-text-main dark:text-text-main-dark font-semibold mb-2">
-                        {selectedDate} 일기
+                        {isSameMonth ? `${selectedDate} 일기` : '날짜를 선택해주세요'}
                     </h3>
                 </div>
             )}

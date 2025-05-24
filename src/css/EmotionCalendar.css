@@ -8,23 +8,42 @@
     font-family: inherit;
     background-color: transparent;
 }
+
 .react-calendar__navigation button {
     color: inherit;
     font-weight: bold;
 }
-.react-calendar__tile {
-    @apply p-1.5 h-14
+
+/* 리엑트 캘린더 네비케이션바 */
+.react-calendar__navigation button:enabled:hover {
+    @apply bg-mindlog text-text-main-dark;
 }
+.react-calendar__navigation button:enabled:focus,
+.react-calendar__navigation button:enabled:focus:hover {
+    @apply bg-inherit text-text-main dark:text-text-main-dark;
+}
+.react-calendar .react-calendar__tile--hasActive,
+.react-calendar .react-calendar__tile--hasActive:enabled:hover,
+.react-calendar .react-calendar__tile--hasActive:enabled:focus {
+    @apply bg-mindlog
+}
+
+.react-calendar__tile {
+    @apply p-1.5 h-14;
+}
+
 .react-calendar__tile--active,
 .react-calendar__tile--active:enabled:focus,
 .react-calendar__tile--active:enabled:focus {
     background: #c76b5d;
     color: #F3F4F6;
 }
+
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile:enabled:hover {
     @apply text-mindlog-light dark:text-inherit dark:bg-mindlog bg-mindlog
 }
+
 .emoji {
     display: block;
     text-align: center;
