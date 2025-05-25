@@ -5,7 +5,9 @@ import {EMOTIONS, EmotionType} from '../constants/emotionList';
 import '../css/EmotionCalendar.css';
 import {DiaryData} from "../types/DiaryData.ts";
 import dayjs from 'dayjs';
-import {fetchMonthlyDiaries} from "../api/api.ts";
+import {deleteDiary, fetchMonthlyDiaries, updateDiary} from "../api/api.ts";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCircleXmark} from "@fortawesome/free-solid-svg-icons";
 
 const getEmotionMeta = (key: EmotionType) => EMOTIONS.find(e => e.key === key)!;
 const EmotionCalendar: React.FC = () => {
@@ -24,7 +26,13 @@ const EmotionCalendar: React.FC = () => {
 
     // 모달 오픈/닫기 및 내용 저장용 state
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState<string>("");
+    const [modalContentDiary, setModalContentDiary] = useState<DiaryData>({
+        date: new Date(),
+        emotion: "",
+        id: 0,
+        note: ""
+    });
+
 
     useEffect(() => {
         if (!selectedDate) {
@@ -94,6 +102,66 @@ const EmotionCalendar: React.FC = () => {
         return null;
     };
 
+    const diaryUpdate = async (modalDiary: DiaryData) => {
+        const emotions = ['기쁨', '평온', '슬픔', '분노', '불안', '무감정'];
+        const originalNote = modalDiary.note;
+
+        // 감정 단어 중 가장 먼저 나오는 위치를 찾음
+        const emotionMatch = emotions
+            .map(emotion => ({ emotion, index: originalNote.indexOf(emotion) }))
+            .filter(({ index }) => index !== -1)
+            .sort((a, b) => a.index - b.index)[0];
+
+        if (!emotionMatch) {
+            console.error("감정 단어를 찾을 수 없습니다.");
+            return;
+        }
+
+        const noteHeaderEndIndex = originalNote.indexOf(emotionMatch.emotion) + emotionMatch.emotion.length;
+        const noteHeader = originalNote.substring(0, noteHeaderEndIndex).trimEnd();
+        const currentNote = originalNote.substring(noteHeaderEndIndex).trimStart();
+
+        // 여기서 사용자로부터 새 본문 내용 입력 받는다고 가정
+        const newNote = prompt("일기 내용을 수정하세요:", currentNote);
+
+        // 사용자가 취소한 경우
+        if (newNote === null) return;
+
+        modalDiary.note = `${noteHeader}\n${newNote}`;
+        // console.log("수정된 일기");
+        // console.log(modalDiary.note);
+        // console.log(modalDiary);
+
+        // 수정 api호출
+        try {
+            const res = await updateDiary(modalDiary);
+            // console.log(res);
+            alert(res);
+            window.location.reload();
+        } catch (e) {
+            console.error('일기 수정 API 실패', e);
+            alert('일기 수정 실패');
+        }
+    };
+
+    const diaryDelete = async (id: number) => {
+        const confirmed = window.confirm(
+            '정말 삭제할까요?\n삭제하면 다시 복원할 수 없습니다.'
+        );
+        if (!confirmed) return;
+
+        // 삭제 api호출
+        try {
+            const res = await deleteDiary(id);
+            console.log(res);
+            alert(res);
+            window.location.reload();
+        } catch (e) {
+            console.error('일기 삭제 API 실패', e);
+            alert('일기 삭제 실패');
+        }
+    };
+
     return (
         <div className="p-6 max-w-3xl mx-auto">
             <h2 className="text-xl md:text-2xl font-semibold mb-4">감정 캘린더</h2>
@@ -132,7 +200,7 @@ const EmotionCalendar: React.FC = () => {
                                     key={entry.id}
                                     className={`flex items-center p-3 rounded-lg border-2 ${borderColor} ${shadowClass} focus:outline-none cursor-pointer transition hover:brightness-110 hover:scale-105`}
                                     onClick={() => {
-                                        setModalContent(entry.note);
+                                        setModalContentDiary(entry);
                                         setIsModalOpen(true);
                                     }}
                                 >
@@ -154,19 +222,47 @@ const EmotionCalendar: React.FC = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex-center z-50"
                      onClick={() => setIsModalOpen(false)}
                 >
-                        <div className="bg-mindlog-light dark:bg-mindlog-dark rounded-lg p-6 w-11/12 max-w-md"
-                             onClick={(e) => e.stopPropagation()}
-                        >
-                            <p className="mb-6 whitespace-pre-wrap">{modalContent}</p>
-                            <div className="flex justify-end">
-                                <button
-                                    className="px-4 py-2 mindlog-btn mindlog-btn-hover text-white rounded transition"
-                                    onClick={() => setIsModalOpen(false)}
-                                >
-                                    닫기
-                                </button>
-                            </div>
-                   </div>
+                    <div className="bg-mindlog-light dark:bg-mindlog-dark rounded-lg p-6 w-11/12 max-w-md"
+                         onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex justify-end">
+                            <button type="button" onClick={() => setIsModalOpen(false)}>
+                                <FontAwesomeIcon icon={faCircleXmark} className="text-mindlog w-7 h-7 mb-2"/>
+                            </button>
+                        </div>
+                        <p className="mb-6 whitespace-pre-wrap">{modalContentDiary.note}</p>
+                        <div className="flex gap-2 justify-end">
+                            {dayjs(modalContentDiary.date).format('YYYY-MM-DD') === todayKey ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        className="p-2 px-3 mindlog-btn mindlog-btn-hover text-white text-sm rounded transition"
+                                        onClick={() => diaryDelete(modalContentDiary.id)}
+                                    >
+                                        삭제
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="p-2 px-3 mindlog-btn mindlog-btn-hover text-white text-sm rounded transition"
+                                        onClick={() => diaryUpdate(modalContentDiary)}
+                                    >
+                                        수정
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        type="button"
+                                        className="p-2 px-3 mindlog-btn mindlog-btn-hover text-white text-sm rounded transition"
+                                        onClick={() => diaryUpdate(modalContentDiary)}
+                                    >
+                                        수정
+                                    </button>
+                                </>
+                            )}
+
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

@@ -8,7 +8,7 @@
 }
 
 .mindlog-btn-hover {
-    @apply hover:bg-mindlog-700 dark:hover:bg-mindlog
+    @apply hover:bg-mindlog-700 dark:hover:bg-mindlog;
 }
 
 .mindlog-link {
@@ -16,5 +16,5 @@
 }
 
 .mindlog-innerText {
-    @apply text-text-main
+    @apply text-text-main;
 }
