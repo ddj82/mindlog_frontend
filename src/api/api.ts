@@ -60,8 +60,9 @@ export const fetchMyInfo = async () => {
 };
 
 // ✅ 감정일기 저장
-export const saveDiary = async (emotion: string, note: string, date: string) => {
+export const saveDiary = async (emotionId: number, emotion: string, note: string, date: string) => {
     const res = await request(`/api/diary`, "POST", {
+        "emotionId": emotionId,
         "emotion": emotion,
         "note": note,
         "date": date

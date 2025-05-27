@@ -30,9 +30,9 @@ const EmotionCalendar: React.FC = () => {
         date: new Date(),
         emotion: "",
         id: 0,
+        emotionId: 0,
         note: ""
     });
-
 
     useEffect(() => {
         if (!selectedDate) {
@@ -62,6 +62,7 @@ const EmotionCalendar: React.FC = () => {
                     map[key].push(item);
                 });
                 setMonthData(map);
+                console.log("api 리스폰스", map);
                 // (선택일이 새 달에 포함되어 있으면 엔트리 초기화)
                 setSelectedEntries(map[selectedDate] || []);
             })
@@ -105,6 +106,7 @@ const EmotionCalendar: React.FC = () => {
     const diaryUpdate = async (modalDiary: DiaryData) => {
         const emotions = ['기쁨', '평온', '슬픔', '분노', '불안', '무감정'];
         const originalNote = modalDiary.note;
+        console.log(modalDiary);
 
         // 감정 단어 중 가장 먼저 나오는 위치를 찾음
         const emotionMatch = emotions
@@ -128,14 +130,10 @@ const EmotionCalendar: React.FC = () => {
         if (newNote === null) return;
 
         modalDiary.note = `${noteHeader}\n${newNote}`;
-        // console.log("수정된 일기");
-        // console.log(modalDiary.note);
-        // console.log(modalDiary);
 
         // 수정 api호출
         try {
             const res = await updateDiary(modalDiary);
-            // console.log(res);
             alert(res);
             window.location.reload();
         } catch (e) {
@@ -153,7 +151,6 @@ const EmotionCalendar: React.FC = () => {
         // 삭제 api호출
         try {
             const res = await deleteDiary(id);
-            console.log(res);
             alert(res);
             window.location.reload();
         } catch (e) {
@@ -232,7 +229,7 @@ const EmotionCalendar: React.FC = () => {
                         </div>
                         <p className="mb-6 whitespace-pre-wrap">{modalContentDiary.note}</p>
                         <div className="flex gap-2 justify-end">
-                            {dayjs(modalContentDiary.date).format('YYYY-MM-DD') === todayKey ? (
+                            {dayjs(modalContentDiary.date).format('YYYY-MM-DD') === todayKey && (
                                 <>
                                     <button
                                         type="button"
@@ -241,16 +238,6 @@ const EmotionCalendar: React.FC = () => {
                                     >
                                         삭제
                                     </button>
-                                    <button
-                                        type="button"
-                                        className="p-2 px-3 mindlog-btn mindlog-btn-hover text-white text-sm rounded transition"
-                                        onClick={() => diaryUpdate(modalContentDiary)}
-                                    >
-                                        수정
-                                    </button>
-                                </>
-                            ) : (
-                                <>
                                     <button
                                         type="button"
                                         className="p-2 px-3 mindlog-btn mindlog-btn-hover text-white text-sm rounded transition"

@@ -15,6 +15,7 @@ const Login = () => {
             const token = await loginUser(email, password);
             setAccessToken(token); // Zustand에 저장
             scheduleAutoLogout(token);
+            // console.log(token);
             alert('로그인 성공!');
             navigate('/');
         } catch (e) {
