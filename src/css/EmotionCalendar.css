@@ -17,7 +17,7 @@
 /* 리엑트 캘린더 네비케이션바 */
 /* 메인 네비게이션바 (<, >, <<, >>, 년월) 버튼 */
 .react-calendar__navigation button:enabled:hover {
-    @apply bg-mindlog text-text-main-dark rounded-xl;
+    @apply text-mindlog-light dark:text-mindlog-dark dark:bg-mindlog-300 bg-mindlog rounded-xl;
 }
 
 /* 메인 네비게이션바 버튼 포커스, 포커스-호버 */
@@ -30,7 +30,7 @@
 .react-calendar .react-calendar__tile--now.react-calendar__tile--hasActive,
 .react-calendar .react-calendar__tile--hasActive:enabled:hover,
 .react-calendar .react-calendar__tile--hasActive:enabled:focus {
-    @apply bg-mindlog text-text-main-dark rounded-xl;
+    @apply text-mindlog-light dark:text-mindlog-dark dark:bg-mindlog-300 bg-mindlog rounded-xl;
 }
 
 /* 네비게이션바(년의 원선택에서) 월 호버 */
@@ -46,13 +46,12 @@
 .react-calendar__tile--active,
 .react-calendar__tile--active:enabled:focus,
 .react-calendar__tile--active:enabled:focus {
-    background: #c76b5d;
-    color: #F3F4F6;
+    @apply text-mindlog-light dark:text-mindlog-dark dark:bg-mindlog-300 bg-mindlog;
 }
 
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile:enabled:hover {
-    @apply text-mindlog-light dark:text-inherit dark:bg-mindlog bg-mindlog
+    @apply text-mindlog-light dark:text-mindlog-dark dark:bg-mindlog-300 bg-mindlog;
 }
 
 .emoji {

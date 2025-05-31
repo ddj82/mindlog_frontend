@@ -163,6 +163,7 @@ const EmotionCalendar: React.FC = () => {
         <div className="p-6 max-w-3xl mx-auto">
             <h2 className="text-xl md:text-2xl font-semibold mb-4">감정 캘린더</h2>
             <Calendar
+                calendarType="gregory" // iso8601 - 월요일 부터
                 // 날짜 클릭(일기 목록만 바꿔줌)
                 onClickDay={onDateClick}
                 value={value}
@@ -224,7 +225,7 @@ const EmotionCalendar: React.FC = () => {
                     >
                         <div className="flex justify-end">
                             <button type="button" onClick={() => setIsModalOpen(false)}>
-                                <FontAwesomeIcon icon={faCircleXmark} className="text-mindlog w-7 h-7 mb-2"/>
+                                <FontAwesomeIcon icon={faCircleXmark} className="text-mindlog dark:text-mindlog-300 w-7 h-7 mb-2"/>
                             </button>
                         </div>
                         <p className="mb-6 whitespace-pre-wrap">{modalContentDiary.note}</p>
