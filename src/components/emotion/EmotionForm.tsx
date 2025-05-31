@@ -11,7 +11,7 @@ dayjs.extend(weekday); // ✅ 요일 계산
 dayjs.extend(localizedFormat); // ✅ 요일 포맷
 
 interface EmotionFormProps {
-    onSubmit: (data: { emotionId: number; emotion: string; note: string; date: any }) => void;
+    onSubmit: (data: { emotionId: number; note: string; date: any }) => void;
 }
 
 const EmotionForm = ({ onSubmit }: EmotionFormProps) => {
@@ -37,7 +37,7 @@ const EmotionForm = ({ onSubmit }: EmotionFormProps) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const today = dayjs().format('YYYY-MM-DD');
-        onSubmit({ emotionId, emotion, note, date: today });
+        onSubmit({ emotionId, note, date: today });
     };
 
     return (

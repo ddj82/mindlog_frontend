@@ -40,3 +40,4 @@ export const EMOTIONS = [
 
 
 export type EmotionType = (typeof EMOTIONS)[number]['key'];
+export type EmotionIdType = (typeof EMOTIONS)[number]['emotionId'];

@@ -4,10 +4,10 @@ import {useNavigate} from "react-router-dom";
 
 const Diary = () => {
     const navigate = useNavigate();
-    const handleEmotionSubmit = async (data: { emotionId: number; emotion: string; note: string; date: string; }) => {
-        // console.log('폼 제출 결과:', data);
+    const handleEmotionSubmit = async (data: { emotionId: number; note: string; date: string; }) => {
+        console.log('폼 제출 결과:', data);
         try {
-            const res = await saveDiary(data.emotionId, data.emotion, data.note, data.date);
+            const res = await saveDiary(data.emotionId, data.note, data.date);
             // console.log(res);
             alert(res);
             navigate('/calendar');
