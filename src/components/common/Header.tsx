@@ -1,7 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 import { useThemeStore } from "../../store/themeStore";
-import { Moon, Sun } from "lucide-react"; // lucide-react 설치했다면 이걸로 아이콘
+import { Moon, Sun } from "lucide-react";
+import {useState} from "react";
+import CommonAlert from "../../util/CommonAlert.tsx"; // lucide-react 설치했다면 이걸로 아이콘
 
 const Header = () => {
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -10,10 +12,21 @@ const Header = () => {
     const toggleTheme = useThemeStore((state) => state.toggleTheme);
     const navigate = useNavigate();
 
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertContent, setAlertContent] = useState("");
+
+    const handleAlert = (content: string) => {
+        setAlertOpen(true);
+        setAlertContent(content);
+    }
+
+    const handleAlertResponse = (result: boolean) => {
+        if (result) navigate('/');
+    }
+
     const handleLogout = () => {
         logout();
-        alert("로그아웃 되었습니다.");
-        navigate("/");
+        handleAlert("로그아웃 되었습니다.");
     };
 
     const handleLogo = () => {
@@ -52,6 +65,14 @@ const Header = () => {
                     {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </button>
             </div>
+            {alertOpen && (
+                <CommonAlert
+                    isOpen={alertOpen}
+                    onRequestClose={() => setAlertOpen(false)}
+                    content={alertContent}
+                    alertResponse={handleAlertResponse}
+                />
+            )}
         </header>
     );
 };

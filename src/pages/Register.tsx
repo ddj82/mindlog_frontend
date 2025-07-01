@@ -1,26 +1,39 @@
 import React, {useState} from "react";
 import {register} from "../api/api.ts";
 import {useNavigate} from "react-router-dom";
+import CommonAlert from "../util/CommonAlert.tsx";
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [nickname, setNickname] = useState('');
     const navigate = useNavigate();
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertContent, setAlertContent] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await register(email, password, nickname);
+            await register(email, password, nickname);
+            // const res = await register(email, password, nickname);
             // console.log('email',email,'password',password,'nickname',nickname);
-            console.log(res);
-            alert('회원가입 성공!');
-            navigate('/login');
+            // console.log(res);
+            handleAlert('회원가입 성공!');
         } catch (e) {
             console.error('회원가입 API 실패', e);
-            alert('회원가입 실패');
+            handleAlert('회원가입 실패');
         }
     };
+
+    const handleAlert = (content: string) => {
+        setAlertOpen(true);
+        setAlertContent(content);
+    }
+
+    const handleAlertResponse = (result: boolean) => {
+        if (result) navigate('/login');
+    }
+
 
     return (
         <div className="p-6 max-w-md mx-auto">
@@ -62,6 +75,15 @@ const Register = () => {
                     </button>
                 </form>
             </div>
+
+            {alertOpen && (
+                <CommonAlert
+                    isOpen={alertOpen}
+                    onRequestClose={() => setAlertOpen(false)}
+                    content={alertContent}
+                    alertResponse={handleAlertResponse}
+                />
+            )}
         </div>
     );
 };

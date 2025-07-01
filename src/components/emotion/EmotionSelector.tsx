@@ -1,4 +1,4 @@
-import { EMOTIONS, EmotionType } from '../../constants/emotionList';
+import { EMOTIONS, EmotionType } from '../../types/emotionList.ts';
 
 interface EmotionSelectorProps {
     selected: EmotionType;

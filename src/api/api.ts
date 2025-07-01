@@ -1,4 +1,4 @@
-import { DiaryData } from '../types/DiaryData';
+import {DiaryData, EmotionFormData} from '../types/DiaryData';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -60,11 +60,9 @@ export const fetchMyInfo = async () => {
 };
 
 // ✅ 감정일기 저장
-export const saveDiary = async (emotionId: number, note: string, date: string) => {
+export const saveDiary = async (data: EmotionFormData) => {
     const res = await request(`/api/diary`, "POST", {
-        "emotionId": emotionId,
-        "note": note,
-        "date": date
+        ...data
     });
 
     if (!res.ok) {
@@ -96,9 +94,9 @@ export const fetchMonthlyDiaries = async (year: number, month: number): Promise<
 };
 
 // ✅ 감정일기 수정
-export const updateDiary = async (modalDiary: DiaryData) => {
-    const res = await request(`/api/diary/${modalDiary.id}`, "PUT", {
-        ...modalDiary
+export const updateDiary = async (id: number, data: EmotionFormData) => {
+    const res = await request(`/api/diary/${id}`, "PUT", {
+        ...data
     });
 
     if (!res.ok) {
