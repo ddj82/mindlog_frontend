@@ -33,6 +33,27 @@ const CommonAlert = ({
         };
     }, [isOpen]);
 
+    // alert 확인 버튼에만 Enter 키 이벤트 처리
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (!isOpen || confirm) return; // confirm 창에서는 동작하지 않음
+
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                alertResponse?.(true);
+                onRequestClose();
+            }
+        };
+
+        if (isOpen && !confirm) { // alert 창일 때만 이벤트 리스너 추가
+            document.addEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen, confirm, alertResponse, onRequestClose]);
+
     return (
         <Modal
             isOpen={isOpen}

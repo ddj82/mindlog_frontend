@@ -18,28 +18,22 @@ const Register = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log('email',email, 'nickname',nickname, 'password',password);
-
         const newErrors: { [key: string]: string } = {}; // 새로운 오류 객체
 
         // 이메일 유효성 검사
         if (!email.trim()) {
-            console.log('email =',email);
             newErrors.email = "이메일을 입력하세요.";
         } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-            console.log('email =',email);
-            newErrors.email = "올바른 이메일 형식이 아닙니다.";
+            // newErrors.email = "올바른 이메일 형식이 아닙니다.";
         }
 
         // 닉네임 유효성 검사
         if (!nickname.trim()) {
-            console.log('nickname =',nickname);
             newErrors.nickname = "닉네임을 입력하세요.";
         }
 
         // 비밀번호 유효성 검사
         if (!password.trim()) {
-            console.log('password =',password);
             newErrors.password = "비밀번호를 입력하세요.";
         }
 
@@ -52,13 +46,13 @@ const Register = () => {
         // 오류가 없으면 초기화 후 진행
         setErrors({});
 
-        try {
-            await register(email, password, nickname);
+        const result = await register(email, password, nickname);
+
+        if (result.success) {
             setApiSuccess(true);
             handleAlert('회원가입 성공!');
-        } catch (e) {
-            console.error('회원가입 API 실패', e);
-            handleAlert('회원가입 실패');
+        } else {
+            handleAlert(`${result.message}`);
         }
     };
 
@@ -70,8 +64,6 @@ const Register = () => {
     const handleAlertResponse = (result: boolean) => {
         if (apiSuccess && result) {
             navigate('/login');
-        } else {
-            navigate('/register');
         }
     }
 

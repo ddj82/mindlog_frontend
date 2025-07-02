@@ -35,17 +35,28 @@ const request = async (endpoint: string, method: string = 'GET', data?: any) => 
 
 // ✅ 회원가입
 export const register = async (email: string, password: string, nickname: string) => {
-    const res = await request(`/api/auth/register`, "POST", {
-        "email": email,
-        "password": password,
-        "nickname": nickname
-    });
+    try {
+        const res = await request(`/api/auth/register`, "POST", {
+            "email": email,
+            "password": password,
+            "nickname": nickname
+        });
 
-    if (!res.ok) {
-        throw new Error('내 정보 조회 실패');
+        if (!res.ok) {
+            const resJson = await res.json();
+            return {
+                success: false,
+                message: resJson.message || '회원가입에 실패했습니다.'
+            };
+        }
+
+        return { success: true, data: await res.text() };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: '네트워크 오류가 발생했습니다.'
+        };
     }
-
-    return await res.text();
 };
 
 // ✅ 내 정보 조회

@@ -8,13 +8,10 @@ const api = axios.create({
 
 // ✅ 로그인 요청
 export const loginUser = async (email: string, password: string) => {
-    console.log('로그인 api 요청(authApi.ts)');
     try {
         const res = await api.post('/api/auth/login', { email, password });
-        console.log('로그인 후(authApi.ts)', res.data);
         return { success: true, data: res.data };
     } catch (error: any) {
-        console.log('로그인 실패(authApi.ts)', error.response?.data);
         return {
             success: false,
             message: error.response?.data || '로그인에 실패했습니다.'
