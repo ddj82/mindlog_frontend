@@ -1,3 +1,14 @@
+export interface Emotion {
+    key: string,
+    label: string,
+    emoji: string,
+    emotionId: number,
+    bgClass: string,
+    shadowClass: string,
+    ringClass: string,
+    borderColor: string,
+}
+
 export const EMOTIONS = [
     { key: 'joy', label: '기쁨', emoji: '😊', emotionId: 1,
         bgClass: 'bg-emotion-joy',

@@ -33,20 +33,19 @@ const EmotionForm = ({
     // 날짜도 edit 모드면 그대로, 아니면 오늘
     const date = initialData?.date ? dayjs(initialData.date).format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD');
     const emotionMeta = EMOTIONS.find((e) => e.key === emotion);
-    const [note, setNote] = useState(
-        initialData?.note ?? `${dayjs().format('YYYY년 M월 D일 (ddd)')}\n오늘의 감정: ${emotionMeta?.emoji} ${emotionMeta?.label}\n`
-    );
+    const [note, setNote] = useState(initialData?.note ?? '');
+    const [title, setTitle] = useState(`${dayjs().format('YYYY년 M월 D일 (ddd)')}\n오늘의 감정: ${emotionMeta?.emoji} ${emotionMeta?.label}`);
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     useEffect(() => {
         // 추가 모드일 때만 기본 노트 갱신
         if (mode === 'add') {
-            setNote(
-                `${dayjs().format('YYYY년 M월 D일 (ddd)')}\n오늘의 감정: ${emotionMeta?.emoji} ${emotionMeta?.label}\n`
+            setTitle(
+                `${dayjs().format('YYYY년 M월 D일 (ddd)')}\n오늘의 감정: ${emotionMeta?.emoji} ${emotionMeta?.label}`
             );
         }
         if (emotionMeta) setEmotionId(emotionMeta.emotionId);
-    }, [emotion]);
+    }, [emotionMeta, mode]);
 
     const handleConfirm = (result: boolean) => {
         setConfirmOpen(false);
@@ -62,34 +61,32 @@ const EmotionForm = ({
             {/* 감정 선택 */}
             {mode === 'add' && (
                 <div>
-                    <h3 className="text-lg font-semibold mb-2">오늘의 감정</h3>
+                    <h3 className="flex-center text-lg font-semibold mb-2">오늘의 감정</h3>
                     <EmotionSelector selected={emotion} onChange={setEmotion} />
                 </div>
             )}
 
             {/* 일기 작성 */}
             <div>
-                <h3
-                    className={`
-                    text-lg font-semibold 
-                    ${mode === 'add' ? 'mt-6 mb-2' : 'mb-4'}
-                    `}
-                >
-
-                    {mode === 'add' ? '간단한 일기' : '간단한 일기'}
+                <h3 className={`flex-center text-lg font-semibold ${mode === 'add' ? 'mt-8 mb-2' : 'mb-4'}`}>
+                    {mode === 'add' && '오늘의 일기'}
                 </h3>
-
-                <textarea
-                    className={`
-                        w-full border border-gray-300 p-3 mb-2 rounded-lg focus:outline-none
-                        bg-mindlog-light dark:bg-mindlog-dark focus:ring-2
-                        ${emotionMeta?.ringClass ?? ''}
-                    `}
-                    rows={10}
-                    placeholder="오늘 있었던 일을 간단히 기록해보세요..."
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                />
+                <div>
+                    <div className="font-bold mb-2 whitespace-pre-wrap">
+                        {title}
+                    </div>
+                    <textarea
+                        className={`
+                            w-full border p-3 mb-2 rounded-lg focus:outline-none
+                            bg-mindlog-light dark:bg-mindlog-dark focus:ring-2
+                            ${emotionMeta && `${emotionMeta.ringClass} ${emotionMeta.borderColor} ${emotionMeta.shadowClass}`}
+                        `}
+                        rows={10}
+                        placeholder="오늘 있었던 일을 간단히 기록해보세요..."
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                    />
+                </div>
             </div>
 
             {/* 제출 버튼 */}

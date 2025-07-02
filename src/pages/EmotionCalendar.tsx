@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Calendar from 'react-calendar';
 import "react-calendar/dist/Calendar.css";
-import {EMOTIONS, EmotionType} from '../types/emotionList.ts';
+import {Emotion, EMOTIONS, EmotionType} from '../types/emotionList.ts';
 import '../css/EmotionCalendar.css';
 import {DiaryData, EmotionFormData} from "../types/DiaryData.ts";
 import dayjs from 'dayjs';
@@ -34,6 +34,8 @@ const EmotionCalendar: React.FC = () => {
         emotionId: 0,
         note: ""
     });
+
+    const [selectedEmotion, setSelectedEmotion] = useState<Emotion>();
 
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertContent, setAlertContent] = useState("");
@@ -222,9 +224,9 @@ const EmotionCalendar: React.FC = () => {
             {selectedEntries.length > 0 ? (
                 <div className="mt-6">
                     <h3 className="text-xl text-text-main dark:text-text-main-dark font-semibold mb-2">
-                        {isSameMonth ? `${selectedDate} 일기` : '날짜를 선택해주세요'}
+                        {isSameMonth ? `${dayjs(selectedDate).format('YYYY년 M월 D일 (ddd)')}` : '날짜를 선택해주세요'}
                     </h3>
-                    <ul className="space-y-2">
+                    <ul className="space-y-4">
                         {selectedEntries.map(entry => {
                             const { shadowClass, borderColor } = getEmotionMeta(entry.emotion);
                             return (
@@ -233,10 +235,18 @@ const EmotionCalendar: React.FC = () => {
                                     className={`flex items-center p-3 rounded-lg border-2 ${borderColor} ${shadowClass} focus:outline-none cursor-pointer transition hover:brightness-110 hover:scale-105`}
                                     onClick={() => {
                                         setModalContentDiary(entry);
+                                        setSelectedEmotion(getEmotionMeta(entry.emotion));
                                         setIsModalOpen(true);
                                     }}
                                 >
-                                    <p className="text-text-main dark:text-text-main-dark">{entry.note}</p>
+                                    <div className="text-text-main dark:text-text-main-dark">
+                                        <div className="text-sm mb-1">
+                                            오늘의 감정: {getEmotionMeta(entry.emotion).emoji} {getEmotionMeta(entry.emotion).label}
+                                        </div>
+                                        <div className="line-clamp-1">
+                                            {entry.note}
+                                        </div>
+                                    </div>
                                 </li>
                             );
                         })}
@@ -245,7 +255,7 @@ const EmotionCalendar: React.FC = () => {
             ) : (
                 <div className="mt-6">
                     <h3 className="text-xl text-text-main dark:text-text-main-dark font-semibold mb-2">
-                        {isSameMonth ? `${selectedDate} 일기` : '날짜를 선택해주세요'}
+                        {isSameMonth ? `${dayjs(selectedDate).format('YYYY년 M월 D일 (ddd)')}` : '날짜를 선택해주세요'}
                     </h3>
                 </div>
             )}
@@ -254,16 +264,27 @@ const EmotionCalendar: React.FC = () => {
                 <CommonModal
                     isOpen={isModalOpen}
                     onRequestClose={() => setIsModalOpen(false)}
-                    title={"일기"}
+                    title={`오늘의 일기`}
                     widthClassName={"md:w-[40%] w-[90%]"}
-                    heightClassName={"h-[50%]"}
-                    customClassName={"rounded-xl px-4"}
-                    contentClassName={"md:!w-full md:h-[74%] h-[76%] flex flex-col justify-between"}
+                    heightClassName={"h-fit"}
+                    customClassName={"rounded-xl px-1"}
+                    contentClassName={"md:!w-full md:h-[74%] h-[76%] flex flex-col justify-between pb-6"}
                 >
                     <div className="bg-mindlog-light dark:bg-mindlog-dark"
                          onClick={(e) => e.stopPropagation()}
                     >
-                        <p className="mb-6 whitespace-pre-wrap">{modalContentDiary.note}</p>
+                        <div className="font-bold mb-2">
+                            {dayjs(modalContentDiary.date).format('YYYY년 M월 D일 (ddd)')}
+                            <br/>
+                            오늘의 감정: {selectedEmotion?.emoji} {selectedEmotion?.label}
+                        </div>
+                        <p
+                            className={`border-2 rounded-lg p-3 mb-6 whitespace-pre-wrap 
+                            ${selectedEmotion && `${selectedEmotion.borderColor} ${selectedEmotion.shadowClass}`}
+                            `}
+                        >
+                            {modalContentDiary.note}
+                        </p>
                     </div>
                     <div className="flex gap-2 justify-end">
                         {dayjs(modalContentDiary.date).format('YYYY-MM-DD') === todayKey && (

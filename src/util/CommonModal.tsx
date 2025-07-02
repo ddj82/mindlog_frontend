@@ -50,7 +50,7 @@ const CommonModal = ({
                     zIndex: zIndex,
                 },
             }}
-            overlayClassName={`fixed inset-0 bg-black/10 flex-center`}
+            overlayClassName={`fixed inset-0 bg-black/50 flex-center`}
             className={`
                 mindlog-bg shadow-lg outline-none modal-animation-forwards overflow-y-auto 
                 ${customClassName} ${widthClassName} ${heightClassName}

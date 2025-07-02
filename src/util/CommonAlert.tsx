@@ -61,7 +61,7 @@ const CommonAlert = ({
                 id="alert-main"
                 className="
                     mindlog-bg rounded-lg p-4 absolute transform
-                    md:m-0 md:w-1/3 md:top-0 md:-translate-y-0
+                    md:w-1/4 md:m-0 md:top-0 md:-translate-y-0
                     w-[90%] top-1/2 -translate-y-1/2 -translate-x-1/2 left-1/2
                 "
             >

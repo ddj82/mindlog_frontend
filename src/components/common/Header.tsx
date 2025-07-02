@@ -35,7 +35,9 @@ const Header = () => {
     };
 
     return (
-        <header className="border-b border-gray-300 dark:border-gray-700 px-4 py-3 flex justify-between items-center">
+        <header
+            className="sticky top-0 mindlog-bg border-b border-gray-300 dark:border-gray-700 px-4 py-3 flex justify-between items-center"
+        >
             <button
                 type="button"
                 onClick={handleLogo}
