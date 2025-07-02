@@ -313,7 +313,7 @@ const EmotionCalendar: React.FC = () => {
                 <CommonModal
                     isOpen={updateModal}
                     onRequestClose={() => setUpdateModal(false)}
-                    title={"수정"}
+                    title={"수정하기"}
                     widthClassName={"md:w-[40%] w-[90%]"}
                     heightClassName={"h-fit"}
                     customClassName={"rounded-xl px-4"}
