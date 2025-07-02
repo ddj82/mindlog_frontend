@@ -52,7 +52,11 @@ const Register = () => {
             setApiSuccess(true);
             handleAlert('회원가입 성공!');
         } else {
-            handleAlert(`${result.message}`);
+            if (result.message) {
+                handleAlert(`${result.message}`);
+            } else {
+                handleAlert('회원가입에 실패했습니다.');
+            }
         }
     };
 

@@ -316,7 +316,7 @@ const EmotionCalendar: React.FC = () => {
                     title={"수정하기"}
                     widthClassName={"md:w-[40%] w-[90%]"}
                     heightClassName={"h-fit"}
-                    customClassName={"rounded-xl px-4"}
+                    customClassName={"rounded-xl px-1"}
                     contentClassName={"md:!w-full md:h-[74%] h-[76%] flex flex-col justify-between pb-8"}
                 >
                     <EmotionForm

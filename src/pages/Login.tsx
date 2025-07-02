@@ -35,7 +35,11 @@ const Login = () => {
             setApiSuccess(true);
             handleAlert('로그인 성공!');
         } else {
-            handleAlert(`${result.message.message}`);
+            if (result.message.message) {
+                handleAlert(`${result.message.message}`);
+            } else {
+                handleAlert('로그인에 실패했습니다.');
+            }
         }
     };
 
