@@ -21,7 +21,7 @@ const Header = () => {
     }
 
     const handleAlertResponse = (result: boolean) => {
-        if (result) navigate('/');
+        if (result) navigate('/login');
     }
 
     const handleLogout = () => {

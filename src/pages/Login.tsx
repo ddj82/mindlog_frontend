@@ -13,25 +13,29 @@ const Login = () => {
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertContent, setAlertContent] = useState("");
 
+    const [apiSuccess, setApiSuccess] = useState(false);
+
     const handleAlert = (content: string) => {
         setAlertOpen(true);
         setAlertContent(content);
     }
 
     const handleAlertResponse = (result: boolean) => {
-        if (result) navigate('/');
+        if (apiSuccess && result) {
+            navigate('/');
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            const token = await loginUser(email, password);
-            setAccessToken(token); // Zustand에 저장
-            scheduleAutoLogout(token);
+        const result = await loginUser(email, password);
+        if (result.success) {
+            setAccessToken(result.data); // Zustand에 저장
+            scheduleAutoLogout(result.data);
+            setApiSuccess(true);
             handleAlert('로그인 성공!');
-        } catch (e) {
-            console.error('로그인 API 실패', e);
-            handleAlert('로그인 실패');
+        } else {
+            handleAlert(`${result.message.message}`);
         }
     };
 
@@ -40,12 +44,11 @@ const Login = () => {
             <h2 className="text-xl md:text-2xl font-semibold mb-4">로그인</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input
-                    type="email"
+                    type="text"
                     placeholder="이메일"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full text-text-main border p-3 rounded"
-                    required
                 />
                 <input
                     type="password"
@@ -53,7 +56,6 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full text-text-main border p-3 rounded"
-                    required
                 />
                 <button
                     type="submit"

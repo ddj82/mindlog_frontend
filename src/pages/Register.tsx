@@ -10,14 +10,51 @@ const Register = () => {
     const navigate = useNavigate();
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertContent, setAlertContent] = useState("");
+    const [apiSuccess, setApiSuccess] = useState(false);
+
+    // 오류 메시지 상태 추가
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        console.log('email',email, 'nickname',nickname, 'password',password);
+
+        const newErrors: { [key: string]: string } = {}; // 새로운 오류 객체
+
+        // 이메일 유효성 검사
+        if (!email.trim()) {
+            console.log('email =',email);
+            newErrors.email = "이메일을 입력하세요.";
+        } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+            console.log('email =',email);
+            newErrors.email = "올바른 이메일 형식이 아닙니다.";
+        }
+
+        // 닉네임 유효성 검사
+        if (!nickname.trim()) {
+            console.log('nickname =',nickname);
+            newErrors.nickname = "닉네임을 입력하세요.";
+        }
+
+        // 비밀번호 유효성 검사
+        if (!password.trim()) {
+            console.log('password =',password);
+            newErrors.password = "비밀번호를 입력하세요.";
+        }
+
+        // 오류가 있으면 상태 업데이트 후 진행 중지
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        // 오류가 없으면 초기화 후 진행
+        setErrors({});
+
         try {
             await register(email, password, nickname);
-            // const res = await register(email, password, nickname);
-            // console.log('email',email,'password',password,'nickname',nickname);
-            // console.log(res);
+            setApiSuccess(true);
             handleAlert('회원가입 성공!');
         } catch (e) {
             console.error('회원가입 API 실패', e);
@@ -31,7 +68,11 @@ const Register = () => {
     }
 
     const handleAlertResponse = (result: boolean) => {
-        if (result) navigate('/login');
+        if (apiSuccess && result) {
+            navigate('/login');
+        } else {
+            navigate('/register');
+        }
     }
 
 
@@ -43,30 +84,36 @@ const Register = () => {
             </div>
             <div className="mt-8">
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="email"
-                        placeholder="이메일"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full text-text-main border p-3 rounded"
-                        required
-                    />
-                    <input
-                        type="nickname"
-                        placeholder="닉네임"
-                        value={nickname}
-                        onChange={(e) => setNickname(e.target.value)}
-                        className="w-full text-text-main border p-3 rounded"
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="비밀번호"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full text-text-main border p-3 rounded"
-                        required
-                    />
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="이메일"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full text-text-main border p-3 rounded"
+                        />
+                        {errors.email && <p className="font-bold text-red-500 text-sm">{errors.email}</p>}
+                    </div>
+                    <div>
+                        <input
+                            type="nickname"
+                            placeholder="닉네임"
+                            value={nickname}
+                            onChange={(e) => setNickname(e.target.value)}
+                            className="w-full text-text-main border p-3 rounded"
+                        />
+                        {errors.nickname && <p className="font-bold text-red-500 text-sm">{errors.nickname}</p>}
+                    </div>
+                    <div>
+                        <input
+                            type="password"
+                            placeholder="비밀번호"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full text-text-main border p-3 rounded"
+                        />
+                        {errors.password && <p className="font-bold text-red-500 text-sm">{errors.password}</p>}
+                    </div>
                     <button
                         type="submit"
                         className="w-full mindlog-btn py-3 rounded mindlog-btn-hover transition"
