@@ -26,7 +26,7 @@ function App() {
     }, [isDarkMode]);
 
     return (
-        <div className="min-h-screen scrollbar-hidden bg-mindlog-light text-text-main dark:bg-mindlog-dark dark:text-text-main-dark transition-colors">
+        <div className="min-h-screen bg-mindlog-light text-text-main dark:bg-mindlog-dark dark:text-text-main-dark transition-colors">
             <AppRouter/>
         </div>
     )

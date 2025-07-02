@@ -13,6 +13,10 @@
     }
 }
 
+html {
+    @apply scrollbar-hidden
+}
+
 /* 공통 스타일 정의 */
 .mindlog-bg {
     @apply bg-mindlog-light text-text-main dark:bg-mindlog-dark dark:text-text-main-dark
