@@ -7,30 +7,35 @@
     border: none;
     font-family: inherit;
     background-color: transparent;
+    @apply text-text-main dark:text-text-main-dark;
 }
 
+/* 메인 네이게이션 폰트 볼드 */
 .react-calendar__navigation button {
-    color: inherit;
     font-weight: bold;
 }
 
 /* 리엑트 캘린더 네비케이션바 */
 /* 메인 네비게이션바 (<, >, <<, >>, 년월) 버튼 */
 .react-calendar__navigation button:enabled:hover {
-    @apply text-mindlog-light dark:text-mindlog-dark dark:bg-mindlog-300 bg-mindlog rounded-xl;
+    @apply bg-transparent
+    /*border border-mindlog dark:border-mindlog-300 rounded-xl;*/
+    /*border: 2px solid #c76b5d;*/
 }
 
 /* 메인 네비게이션바 버튼 포커스, 포커스-호버 */
 .react-calendar__navigation button:enabled:focus,
 .react-calendar__navigation button:enabled:focus:hover {
-    @apply bg-inherit text-text-main dark:text-text-main-dark;
+    @apply bg-transparent text-text-main dark:text-text-main-dark;
 }
 
 /* 네비게이션바(년의 월선택에서) 오늘이 포함된 월 */
 .react-calendar .react-calendar__tile--now.react-calendar__tile--hasActive,
 .react-calendar .react-calendar__tile--hasActive:enabled:hover,
 .react-calendar .react-calendar__tile--hasActive:enabled:focus {
-    @apply text-mindlog-light dark:text-mindlog-dark dark:bg-mindlog-300 bg-mindlog rounded-xl;
+    @apply font-bold underline text-black dark:text-white
+    /*border border-mindlog dark:border-mindlog-300  rounded-xl;*/
+    /*border: 2px solid #c76b5d;*/
 }
 
 /* 네비게이션바(년의 원선택에서) 월 호버 */
@@ -39,19 +44,33 @@
     @apply rounded-xl;
 }
 
-.react-calendar__tile {
+/* 날짜, 네비게이션 타일 패딩 */
+.react-calendar__tile,
+.react-calendar__year-view .react-calendar__tile {
     @apply p-1.5 h-14;
 }
 
-.react-calendar__tile--active,
-.react-calendar__tile--active:enabled:focus,
-.react-calendar__tile--active:enabled:focus {
-    @apply text-mindlog-light dark:text-mindlog-dark dark:bg-mindlog-300 bg-mindlog;
+/* 선택 된 날짜 */
+.react-calendar .react-calendar__tile--active,
+.react-calendar .react-calendar__tile--active:enabled:focus,
+.react-calendar .react-calendar__tile--active:enabled:focus {
+    @apply
+    text-black dark:text-white font-bold
+    bg-transparent
+    border border-mindlog dark:border-mindlog-300;
+    border: 2px solid #c76b5d;
 }
 
+/* 선택 되지 않은 날짜 호버, 포커스 */
 .react-calendar__tile--active:enabled:hover,
-.react-calendar__tile:enabled:hover {
-    @apply text-mindlog-light dark:text-mindlog-dark dark:bg-mindlog-300 bg-mindlog;
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    @apply bg-transparent;
+}
+
+/* 날짜 선택 할 때 */
+.react-calendar .focus\:outline-none:focus {
+    outline: none;
 }
 
 .emoji {
@@ -59,4 +78,3 @@
     text-align: center;
     line-height: 1.5rem;
 }
-
