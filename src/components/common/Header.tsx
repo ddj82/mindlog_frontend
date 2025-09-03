@@ -13,6 +13,7 @@ import {
     applyFont,
 } from "../../types/font.ts"
 import AccordionItem from "../../util/AccordionItem.tsx";
+import LoadingPage from "../../util/LoadingPage.tsx";
 
 const Header = () => {
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -85,6 +86,15 @@ const Header = () => {
         applyFont(font);
         localStorage.setItem(FONT_STORAGE_KEY, font);
         setIsAccordionOpen(false);
+        handleFontChangeLoading();
+    };
+
+    const [loading, setLoading] = useState(false);
+
+    // 딜레이
+    const handleFontChangeLoading = () => {
+        setLoading(true);
+        window.setTimeout(() => setLoading(false), 500);
     };
 
     return (
@@ -161,6 +171,7 @@ const Header = () => {
                     alertResponse={handleAlertResponse}
                 />
             )}
+            <LoadingPage open={loading} loadingMessage="폰트 적용 중..." />
         </header>
     );
 };
