@@ -26,10 +26,7 @@ const LoadingPage = ({ open, loadingMessage = "처리 중..." }: LoadingPageProp
             {/* 컨텐트 */}
             <div className="relative mindlog-bg rounded-2xl shadow-xl px-6 py-5 flex items-center gap-3">
                 {/* 스피너 */}
-                <div
-                    className="w-6 h-6 border-2 border-mindlog dark:border-mindlog-300 border-t-transparent rounded-full animate-spin"
-                    role="status"
-                />
+                <div className="w-6 h-6 border-2 border-mindlog dark:border-mindlog-300 border-t-transparent rounded-full animate-spin"/>
                 <span className="text-sm">{loadingMessage}</span>
             </div>
         </div>,

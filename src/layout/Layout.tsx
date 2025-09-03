@@ -1,33 +1,32 @@
-import { Outlet } from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import Header from "../components/common/Header";
-import {useEffect, useState} from "react";
 import {AnimatePresence, motion} from "framer-motion";
 
 const Layout = () => {
-    const [loading, setLoading] = useState(true);
-
-    // 페이지 로드 시 딜레이
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
+    const location = useLocation();
+    const variants = {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -20 },
+    };
 
     return (
         <div className="relative">
-            <AnimatePresence>
-                {loading ? (
-                    <div></div>
-                ) : (
+            <Header />
+            <main>
+                <AnimatePresence mode="wait" initial={false}>
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1 }}
+                        key={location.pathname}
+                        variants={variants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ duration: 0.35, ease: "easeInOut" }}
                     >
-                        <Header />
                         <Outlet />
                     </motion.div>
-                )}
-            </AnimatePresence>
+                </AnimatePresence>
+            </main>
         </div>
     );
 };
