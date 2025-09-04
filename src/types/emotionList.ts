@@ -51,4 +51,6 @@ export const EMOTIONS = [
 
 
 export type EmotionType = (typeof EMOTIONS)[number]['key'];
+export type EmotionLabelType = (typeof EMOTIONS)[number]['label'];
+export type EmotionEmojiType = (typeof EMOTIONS)[number]['emoji'];
 export type EmotionIdType = (typeof EMOTIONS)[number]['emotionId'];

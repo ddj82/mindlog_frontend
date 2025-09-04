@@ -11,6 +11,8 @@ import CommonModal from "../util/CommonModal.tsx";
 import EmotionForm from "../components/emotion/EmotionForm.tsx";
 
 const getEmotionMeta = (key: EmotionType) => EMOTIONS.find(e => e.key === key)!;
+
+
 const EmotionCalendar: React.FC = () => {
     // 기존: value는 '선택된 날짜' 용도
     const [value, setValue] = useState<Date>(new Date());
@@ -112,45 +114,6 @@ const EmotionCalendar: React.FC = () => {
         return null;
     };
 
-    // const diaryUpdate1 = async (modalDiary: DiaryData) => {
-    //     const emotions = ['기쁨', '평온', '슬픔', '분노', '불안', '무감정'];
-    //     const originalNote = modalDiary.note;
-    //     console.log(modalDiary);
-    //
-    //     // 감정 단어 중 가장 먼저 나오는 위치를 찾음
-    //     const emotionMatch = emotions
-    //         .map(emotion => ({ emotion, index: originalNote.indexOf(emotion) }))
-    //         .filter(({ index }) => index !== -1)
-    //         .sort((a, b) => a.index - b.index)[0];
-    //
-    //     if (!emotionMatch) {
-    //         console.error("감정 단어를 찾을 수 없습니다.");
-    //         return;
-    //     }
-    //
-    //     const noteHeaderEndIndex = originalNote.indexOf(emotionMatch.emotion) + emotionMatch.emotion.length;
-    //     const noteHeader = originalNote.substring(0, noteHeaderEndIndex).trimEnd();
-    //     const currentNote = originalNote.substring(noteHeaderEndIndex).trimStart();
-    //
-    //     // 여기서 사용자로부터 새 본문 내용 입력 받는다고 가정
-    //     const newNote = prompt("일기 내용을 수정하세요:", currentNote);
-    //
-    //     // 사용자가 취소한 경우
-    //     if (newNote === null) return;
-    //
-    //     modalDiary.note = `${noteHeader}\n${newNote}`;
-    //
-    //     // 수정 api호출
-    //     try {
-    //         // const res = await updateDiary(modalDiary);
-    //         // handleAlert(res);
-    //         window.location.reload();
-    //     } catch (e) {
-    //         console.error('일기 수정 API 실패', e);
-    //         // handleAlert('일기 수정 실패');
-    //     }
-    // };
-
     const diaryUpdate = (id: number) => {
         setUpdateModal(true);
         setSelectedDiaryId(id);
@@ -197,7 +160,21 @@ const EmotionCalendar: React.FC = () => {
 
     return (
         <div className="p-6 max-w-3xl mx-auto">
-            <h2 className="text-xl md:text-2xl font-semibold mb-4">감정 캘린더</h2>
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl md:text-2xl font-semibold">감정 캘린더</h2>
+                <button
+                    type="button"
+                    className="p-0.5 px-2.5 text-sm font-bold rounded-lg border border-text-main dark:border-text-main-dark"
+                    onClick={() => {
+                        const today = new Date();
+                        setSelectedDate(todayKey);
+                        setValue(today);
+                        setActiveStartDate(today);
+                    }}
+                >
+                    Today
+                </button>
+            </div>
             <Calendar
                 calendarType="gregory" // iso8601 - 월요일 부터
                 // 날짜 클릭(일기 목록만 바꿔줌)
@@ -215,7 +192,7 @@ const EmotionCalendar: React.FC = () => {
                 activeStartDate={activeStartDate}
                 tileClassName={tileClassName}
                 tileContent={tileContent}
-                className="w-fit md:mx-14 p-4 rounded-lg shadow-md"
+                className="w-fit md:mx-14 p-4 rounded-lg shadow-xl"
                 prevLabel="‹"
                 nextLabel="›"
                 formatMonthYear={(_, date) => date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' })}

@@ -4,6 +4,7 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 const defaultHeaders = () => {
     const token = localStorage.getItem('accessToken');
+    // console.log('token',token);
     return {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -61,7 +62,7 @@ export const register = async (email: string, password: string, nickname: string
 
 // ✅ 내 정보 조회
 export const fetchMyInfo = async () => {
-    const res = await request(`/api/users/me`, "GET");
+    const res = await request(`/api/auth/me`, "GET");
 
     if (!res.ok) {
         throw new Error('내 정보 조회 실패');
@@ -126,4 +127,15 @@ export const deleteDiary = async (id: number) => {
     }
 
     return await res.text();
+};
+
+// ✅ 전체 감정 통계 요약
+export const getOverallStats = async () => {
+    const res = await request(`/api/statistics/overall`, "GET");
+
+    if (!res.ok) {
+        throw new Error('통계 요약 조회 실패');
+    }
+
+    return await res.json();
 };
