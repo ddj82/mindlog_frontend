@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "license": "MIT",
+  "author": "ddj82",
+  "description": "감정을 기록하고 분석하는 개인 일기 웹 애플리케이션",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
