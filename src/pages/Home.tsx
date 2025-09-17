@@ -38,7 +38,13 @@ const Home = () => {
                         aria-busy="true"
                         aria-live="polite"
                     >
-                        <div className="w-12 h-12 border-4 border-mindlog dark:border-mindlog-300 border-t-transparent rounded-full animate-spin"/>
+                        <div
+                            className="
+                            w-12 h-12 border-4 border-mindlog dark:border-mindlog-300
+                            border-t-transparent dark:border-t-transparent
+                            rounded-full animate-spin
+                            "
+                        />
                     </motion.div>
                 ) : (
                     <motion.main
